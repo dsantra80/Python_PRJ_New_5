@@ -28,6 +28,7 @@ text_generator = pipeline(
 
 lock = threading.Lock()
 
+
 def sanitize_input(input_text):
     return re.sub(r'[^\w\s]', '', input_text).strip()
 
@@ -35,8 +36,8 @@ def sanitize_input(input_text):
 def get_response(prompt, max_tokens, temperature):
     with lock:
         sequences = text_generator(
-            prompt, 
-            max_new_tokens=max_tokens, 
+            prompt,
+            max_new_tokens=max_tokens,
             temperature=temperature
         )
     gen_text = sequences[0]["generated_text"]
@@ -46,7 +47,7 @@ def get_response(prompt, max_tokens, temperature):
 @routes.route('/generate', methods=['POST'])
 def generate():
     data = request.get_json()
-    
+
     prompt = sanitize_input(data.get("prompt", ""))
     max_tokens = data.get("max_tokens", Config.MAX_TOKENS)
     temperature = data.get("temperature", Config.TEMPERATURE)
