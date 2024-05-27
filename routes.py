@@ -25,10 +25,12 @@ text_generator = pipeline(
     token=HF_TOKEN
 )
 
+
 lock = threading.Lock()
 
 def sanitize_input(input_text):
     return re.sub(r'[^\w\s]', '', input_text).strip()
+
 
 def get_response(prompt, max_tokens, temperature):
     with lock:
@@ -39,6 +41,7 @@ def get_response(prompt, max_tokens, temperature):
         )
     gen_text = sequences[0]["generated_text"]
     return gen_text
+
 
 @routes.route('/generate', methods=['POST'])
 def generate():
@@ -53,6 +56,7 @@ def generate():
 
     response = get_response(prompt, max_tokens, temperature)
     return jsonify({"response": response})
+
 
 @routes.route('/status', methods=['GET'])
 def status():
